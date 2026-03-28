@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load account_extras %}
+
+{% block title %}Role Management | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <h1>User Administrator workspace</h1>
+    <p>You can view users and change roles between Member, Officer, and Treasurer. You cannot assign the User Administrator role here.</p>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Status</th>
+          <th>Current role</th>
+          <th>Update role</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for profile in profiles %}
+          <tr>
+            <td>{{ profile.display_name }}<br><span class="muted">{{ profile.user.email }}</span></td>
+            <td><span class="pill {{ profile.status }}">{{ profile.status_label }}</span></td>
+            <td><span class="pill {{ profile.role }}">{{ profile.role_label }}</span></td>
+            <td>
+              {% if profile.role == 'user_admin' or profile.user.is_superuser %}
+                <span class="muted">Protected</span>
+              {% else %}
+                <form method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                  {{ forms_by_profile_id|get_item:profile.id }}
+                  <button type="submit">Save</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

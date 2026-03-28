@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Conversation | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h1>Conversation</h1>
+    <p class="muted">
+      Participants:
+      {% for participant in conversation.participants.all %}
+        {{ participant.get_full_name|default:participant.username }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    {% for message in messages %}
+      <div class="message-bubble {% if message.sender == request.user %}mine{% endif %}">
+        <strong>{{ message.sender.get_full_name|default:message.sender.username }}</strong>
+        <div class="muted">{{ message.sent_at|date:'M j, Y, g:i a' }}</div>
+        <p>{{ message.body }}</p>
+      </div>
+    {% empty %}
+      <div class="empty-state">No messages yet.</div>
+    {% endfor %}
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Send message</button>
+    </form>
+  </div>
+{% endblock %}

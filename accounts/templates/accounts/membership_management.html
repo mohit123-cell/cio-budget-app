@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load account_extras %}
+
+{% block title %}Membership Management | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="hero">
+    <h1>Membership moderation</h1>
+    <p>Treasurers can approve, leave pending, or ban users. Role changes stay separate in the User Administrator interface.</p>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Update status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for profile in profiles %}
+          <tr>
+            <td>{{ profile.display_name }}<br><span class="muted">{{ profile.user.email }}</span></td>
+            <td><span class="pill {{ profile.role }}">{{ profile.role_label }}</span></td>
+            <td><span class="pill {{ profile.status }}">{{ profile.status_label }}</span></td>
+            <td>
+              {% if profile.user == request.user %}
+                <span class="muted">You cannot change yourself here.</span>
+              {% else %}
+                <form method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                  {{ forms_by_profile_id|get_item:profile.id }}
+                  <button type="submit">Save</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

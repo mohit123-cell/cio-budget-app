@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Account | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="card center-card danger-zone">
+    <h1>Delete account</h1>
+    <p>This action permanently deletes your user account, profile, conversations, and related records.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="danger" type="submit">Delete my account</button>
+    </form>
+  </div>
+{% endblock %}

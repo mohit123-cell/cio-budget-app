@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Budget Categories | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="align-between" style="margin-bottom: 20px;">
+    <h1>Budget categories</h1>
+    {% if profile.role == 'treasurer' %}
+      <a class="button" href="{% url 'accounts:budget_category_create' %}">New category</a>
+    {% endif %}
+  </div>
+  <div class="card">
+    {% if categories %}
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Allocated</th>
+            <th>Approved</th>
+            <th>Remaining</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for category in categories %}
+            <tr>
+              <td>{{ category.name }}</td>
+              <td>{{ category.description|default:'—' }}</td>
+              <td>${{ category.allocated_amount }}</td>
+              <td>${{ category.approved_total }}</td>
+              <td>${{ category.remaining_amount }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty-state">No categories yet.</div>
+    {% endif %}
+  </div>
+{% endblock %}

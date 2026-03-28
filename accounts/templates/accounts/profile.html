@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="align-between">
+      <div>
+        <h1>{{ profile.display_name }}</h1>
+        <p class="muted">{{ request.user.email }}</p>
+        <p>
+          <span class="pill {{ profile.role }}">{{ profile.role_label }}</span>
+          <span class="pill {{ profile.status }}">{{ profile.status_label }}</span>
+        </p>
+      </div>
+      {% if profile.avatar_url %}
+        <img class="avatar" src="{{ profile.avatar_url }}" alt="Profile picture">
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-top: 20px;">
+    <div class="card">
+      <h2>Basic information</h2>
+      <p><strong>Organization:</strong> {{ profile.organization_name|default:'Not added yet' }}</p>
+      <p><strong>Phone:</strong> {{ profile.phone_number|default:'Not added yet' }}</p>
+      <p><strong>Joined:</strong> {{ profile.join_date }}</p>
+      <a class="button" href="{% url 'accounts:edit_profile' %}">Edit profile</a>
+    </div>
+    <div class="card">
+      <h2>Bio</h2>
+      <p>{{ profile.bio|default:'No bio added yet.' }}</p>
+    </div>
+  </div>
+{% endblock %}

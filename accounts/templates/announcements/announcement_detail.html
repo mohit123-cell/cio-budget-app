@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Announcement | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="align-between">
+      <div>
+        <h1>{{ announcement.title }}</h1>
+        <p class="muted">By {{ announcement.created_by.get_full_name|default:announcement.created_by.username }} on {{ announcement.created_at|date:'M j, Y, g:i a' }}</p>
+      </div>
+      {% if profile.role == 'treasurer' or request.user == announcement.created_by %}
+        <a class="button light" href="{% url 'accounts:announcement_edit' announcement.id %}">Edit</a>
+      {% endif %}
+    </div>
+    <p>{{ announcement.body|linebreaks }}</p>
+    {% if announcement.attachment %}
+      <p><a href="{{ announcement.attachment.url }}" target="_blank">Open attachment</a></p>
+    {% endif %}
+    {% if announcement.is_locked %}
+      <p><span class="pill denied">Replies are locked</span></p>
+    {% endif %}
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    <h2>Replies</h2>
+    {% for reply in announcement.replies.all %}
+      <div class="message-bubble">
+        <strong>{{ reply.author.get_full_name|default:reply.author.username }}</strong>
+        <div class="muted">{{ reply.created_at|date:'M j, Y, g:i a' }}</div>
+        <p>{{ reply.body }}</p>
+      </div>
+    {% empty %}
+      <div class="empty-state">No replies yet.</div>
+    {% endfor %}
+  </div>
+
+  {% if not announcement.is_locked %}
+    <div class="card" style="margin-top: 20px;">
+      <form method="post">
+        {% csrf_token %}
+        {{ reply_form.as_p }}
+        <button type="submit">Post reply</button>
+      </form>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}New Purchase Request | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="card center-card">
+    <h1>Submit a purchase request</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Submit request</button>
+    </form>
+  </div>
+{% endblock %}

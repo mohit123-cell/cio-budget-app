@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Users | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h1>Active users</h1>
+    {% if users %}
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+            <tr>
+              <td>{{ user.get_full_name|default:user.username }}<br><span class="muted">{{ user.email }}</span></td>
+              <td><span class="pill {{ user.profile.role }}">{{ user.profile.role_label }}</span></td>
+              <td><a class="button light" href="{% url 'accounts:start_conversation' user.id %}">Message</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty-state">No active users are available right now.</div>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | CIO Budget App{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <div class="align-between">
+      <div>
+        <h1>Hello, {{ profile.display_name }}</h1>
+        <p>
+          <span class="pill {{ profile.role }}">{{ profile.role_label }}</span>
+          <span class="pill {{ profile.status }}">{{ profile.status_label }}</span>
+        </p>
+        <p>{{ profile.organization_name|default:'Add your organization name in your profile.' }}</p>
+      </div>
+      {% if profile.avatar_url %}
+        <img class="avatar" src="{{ profile.avatar_url }}" alt="Profile picture">
+      {% endif %}
+    </div>
+  </section>
+
+  <div class="stats" style="margin-bottom: 24px;">
+    <div class="stat"><strong>{{ approved_count }}</strong><br><span class="muted">Approved requests</span></div>
+    <div class="stat"><strong>{{ pending_count }}</strong><br><span class="muted">Pending requests</span></div>
+    <div class="stat"><strong>{{ conversation_count }}</strong><br><span class="muted">Conversations</span></div>
+    <div class="stat"><strong>{{ documents|length }}</strong><br><span class="muted">Recent documents</span></div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="align-between">
+        <h2>Recent announcements</h2>
+        {% if profile.role == 'officer' or profile.role == 'treasurer' %}
+          <a class="button light" href="{% url 'accounts:announcement_create' %}">Post</a>
+        {% endif %}
+      </div>
+      {% if announcements %}
+        <ul class="list-plain">
+          {% for announcement in announcements %}
+            <li>
+              <a href="{% url 'accounts:announcement_detail' announcement.id %}"><strong>{{ announcement.title }}</strong></a>
+              {% if announcement.is_pinned %}<span class="pill">Pinned</span>{% endif %}
+              <div class="muted">By {{ announcement.created_by.get_full_name|default:announcement.created_by.username }} on {{ announcement.created_at|date:'M j, Y' }}</div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-state">No announcements yet.</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="align-between">
+        <h2>Recent documents</h2>
+        {% if profile.role == 'officer' or profile.role == 'treasurer' %}
+          <a class="button light" href="{% url 'accounts:document_upload' %}">Upload</a>
+        {% endif %}
+      </div>
+      {% if documents %}
+        <ul class="list-plain">
+          {% for document in documents %}
+            <li>
+              <a href="{{ document.file.url }}" target="_blank"><strong>{{ document.title }}</strong></a>
+              <div class="muted">{{ document.description|default:'No description yet.' }}</div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-state">No shared documents yet.</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="align-between">
+        <h2>Budget categories</h2>
+        {% if profile.role == 'treasurer' %}
+          <a class="button light" href="{% url 'accounts:budget_category_create' %}">New Category</a>
+        {% endif %}
+      </div>
+      {% if categories %}
+        <ul class="list-plain">
+          {% for category in categories %}
+            <li>
+              <strong>{{ category.name }}</strong>
+              <div class="muted">Allocated: ${{ category.allocated_amount }} · Remaining: ${{ category.remaining_amount }}</div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-state">No budget categories yet.</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="align-between">
+        <h2>Recent purchase requests</h2>
+        {% if profile.role == 'officer' or profile.role == 'treasurer' %}
+          <a class="button light" href="{% url 'accounts:purchase_request_create' %}">Submit</a>
+        {% endif %}
+      </div>
+      {% if recent_requests %}
+        <ul class="list-plain">
+          {% for request in recent_requests %}
+            <li>
+              <strong>{{ request.title }}</strong>
+              <span class="pill {{ request.status }}">{{ request.get_status_display }}</span>
+              <div class="muted">{{ request.category.name }} · ${{ request.estimated_cost }}</div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-state">No purchase requests visible to you yet.</div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

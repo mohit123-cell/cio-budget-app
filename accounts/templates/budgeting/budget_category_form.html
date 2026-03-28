@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ mode }} Budget Category | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="card center-card">
+    <h1>{{ mode }} budget category</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Save category</button>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Announcements | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="align-between" style="margin-bottom: 20px;">
+    <h1>Announcements</h1>
+    {% if profile.role == 'officer' or profile.role == 'treasurer' %}
+      <a class="button" href="{% url 'accounts:announcement_create' %}">New announcement</a>
+    {% endif %}
+  </div>
+  <div class="card">
+    {% if announcements %}
+      <ul class="list-plain">
+        {% for announcement in announcements %}
+          <li>
+            <div class="align-between">
+              <div>
+                <a href="{% url 'accounts:announcement_detail' announcement.id %}"><strong>{{ announcement.title }}</strong></a>
+                {% if announcement.is_pinned %}<span class="pill">Pinned</span>{% endif %}
+                {% if announcement.is_locked %}<span class="pill denied">Locked</span>{% endif %}
+                <div class="muted">{{ announcement.created_by.get_full_name|default:announcement.created_by.username }} · {{ announcement.created_at|date:'M j, Y' }} · {{ announcement.reply_count }} replies</div>
+              </div>
+              {% if request.user == announcement.created_by or profile.role == 'treasurer' %}
+                <a class="button light" href="{% url 'accounts:announcement_edit' announcement.id %}">Edit</a>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-state">No announcements available for your role.</div>
+    {% endif %}
+  </div>
+{% endblock %}

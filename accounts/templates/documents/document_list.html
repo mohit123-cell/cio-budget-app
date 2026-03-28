@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Documents | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="align-between" style="margin-bottom: 20px;">
+    <h1>Shared documents</h1>
+    {% if profile.role == 'officer' or profile.role == 'treasurer' %}
+      <a class="button" href="{% url 'accounts:document_upload' %}">Upload document</a>
+    {% endif %}
+  </div>
+  <div class="card">
+    {% if documents %}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Uploaded by</th>
+            <th>Visibility</th>
+            <th>File</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for document in documents %}
+            <tr>
+              <td>{{ document.title }}</td>
+              <td>{{ document.description|default:'—' }}</td>
+              <td>{{ document.uploaded_by.get_full_name|default:document.uploaded_by.username }}</td>
+              <td>{{ document.get_visibility_display }}</td>
+              <td><a href="{{ document.file.url }}" target="_blank">Open</a></td>
+              <td>
+                {% if request.user == document.uploaded_by or profile.role == 'treasurer' %}
+                  <a class="button light" href="{% url 'accounts:document_delete' document.id %}">Delete</a>
+                {% else %}
+                  <span class="muted">—</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty-state">No documents available for your role.</div>
+    {% endif %}
+  </div>
+{% endblock %}

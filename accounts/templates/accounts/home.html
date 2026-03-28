@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}CIO Budget App{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <h1>Budgeting, approvals, documents, and communication for UVA student organizations.</h1>
+    <p>
+      This app gives student org members a shared place for budget visibility, purchase requests,
+      announcements, direct messages, and reliable file storage.
+    </p>
+    <a class="button" href="{% url 'accounts:sign_in' %}">Continue with Google</a>
+  </section>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <h2>Role-based access</h2>
+      <p class="muted">Members, officers, treasurers, and a separate User Administrator role each see different workflows.</p>
+    </div>
+    <div class="card">
+      <h2>In-app communication</h2>
+      <p class="muted">Use direct messages and announcement threads instead of scattering updates across texts and spreadsheets.</p>
+    </div>
+    <div class="card">
+      <h2>Reliable file storage</h2>
+      <p class="muted">Profile pictures, receipts, announcements, and documents are designed to use Amazon S3 in production.</p>
+    </div>
+  </div>
+{% endblock %}

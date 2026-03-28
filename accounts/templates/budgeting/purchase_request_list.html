@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Purchase Requests | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="align-between" style="margin-bottom: 20px;">
+    <h1>Purchase requests</h1>
+    {% if profile.role == 'officer' or profile.role == 'treasurer' %}
+      <a class="button" href="{% url 'accounts:purchase_request_create' %}">Submit request</a>
+    {% endif %}
+  </div>
+  <div class="card">
+    {% if purchase_requests %}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Requested by</th>
+            <th>Cost</th>
+            <th>Status</th>
+            <th>Receipt</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for request in purchase_requests %}
+            <tr>
+              <td>{{ request.title }}<br><span class="muted">{{ request.description|truncatechars:90 }}</span></td>
+              <td>{{ request.category.name }}</td>
+              <td>{{ request.requested_by.get_full_name|default:request.requested_by.username }}</td>
+              <td>${{ request.estimated_cost }}</td>
+              <td><span class="pill {{ request.status }}">{{ request.get_status_display }}</span></td>
+              <td>
+                {% if request.receipt_file %}<a href="{{ request.receipt_file.url }}" target="_blank">Uploaded file</a>{% endif %}
+                {% if request.receipt_file and request.receipt_link %}<br>{% endif %}
+                {% if request.receipt_link %}<a href="{{ request.receipt_link }}" target="_blank">External link</a>{% endif %}
+                {% if not request.receipt_file and not request.receipt_link %}—{% endif %}
+              </td>
+              <td>
+                {% if profile.role == 'treasurer' and request.status == 'pending' %}
+                  <a class="button light" href="{% url 'accounts:purchase_request_review' request.id %}">Review</a>
+                {% else %}
+                  <span class="muted">—</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty-state">No requests available.</div>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In | CIO Budget App{% endblock %}
+
+{% block extra_head %}
+<script src="https://accounts.google.com/gsi/client" async></script>
+{% endblock %}
+
+{% block content %}
+  <div class="card center-card" style="text-align: center;">
+    <h1>Welcome back</h1>
+    <p class="muted">Use your Google account to access the CIO Budget App.</p>
+
+    {% if google_client_id %}
+      <div id="g_id_onload"
+          data-client_id="{{ google_client_id }}"
+          data-context="signin"
+          data-ux_mode="popup"
+          data-callback="handleCredentialResponse"
+          data-auto_prompt="false">
+      </div>
+
+      <div class="g_id_signin"
+          data-type="standard"
+          data-shape="pill"
+          data-theme="outline"
+          data-text="signin_with"
+          data-size="large"
+          data-logo_alignment="left">
+      </div>
+
+      <form id="google-login-form" method="post" action="{% url 'accounts:auth_receiver' %}" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="credential" id="credential-field">
+      </form>
+
+      <script>
+        function handleCredentialResponse(response) {
+          document.getElementById('credential-field').value = response.credential;
+          document.getElementById('google-login-form').submit();
+        }
+      </script>
+    {% else %}
+      <p class="muted">Google Sign-In is not configured yet. Add <code>GOOGLE_OAUTH_CLIENT_ID</code> to your environment.</p>
+    {% endif %}
+  </div>
+{% endblock %}

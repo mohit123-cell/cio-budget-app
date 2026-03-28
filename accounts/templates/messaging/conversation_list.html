@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Messages | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="align-between" style="margin-bottom: 20px;">
+    <h1>Your conversations</h1>
+    <a class="button" href="{% url 'accounts:user_list' %}">Start new message</a>
+  </div>
+  <div class="card">
+    {% if conversations %}
+      <ul class="list-plain">
+        {% for conversation in conversations %}
+          <li>
+            <a href="{% url 'accounts:conversation_detail' conversation.id %}">
+              <strong>
+                {% for participant in conversation.participants.all %}
+                  {% if participant != request.user %}{{ participant.get_full_name|default:participant.username }}{% endif %}
+                {% empty %}
+                  Empty conversation
+                {% endfor %}
+              </strong>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-state">No conversations yet.</div>
+    {% endif %}
+  </div>
+{% endblock %}

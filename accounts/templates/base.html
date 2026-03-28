@@ -1,0 +1,185 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}CIO Budget App{% endblock %}</title>
+    <style>
+      :root {
+        --uva-blue: #232d4b;
+        --uva-orange: #e57200;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --border: #d8e0ea;
+        --success: #0f766e;
+        --warning: #9a3412;
+        --danger: #b91c1c;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      a { color: var(--uva-blue); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .topbar {
+        background: linear-gradient(135deg, var(--uva-blue), #34456d);
+        color: white;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .brand { font-size: 1.25rem; font-weight: 700; }
+      .brand span { color: #ffd7ad; }
+      .nav { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+      .nav a {
+        color: white;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+      }
+      .nav a.cta { background: var(--uva-orange); }
+      .wrapper { max-width: 1180px; margin: 0 auto; padding: 24px; }
+      .hero {
+        background: linear-gradient(135deg, var(--uva-blue), #1b2237);
+        color: white;
+        padding: 36px;
+        border-radius: 22px;
+        margin-bottom: 24px;
+      }
+      .hero p { color: rgba(255,255,255,0.9); max-width: 700px; }
+      .grid { display: grid; gap: 20px; }
+      .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+      .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 14px 30px rgba(35, 45, 75, 0.05);
+      }
+      .button, button {
+        display: inline-block;
+        border: none;
+        border-radius: 999px;
+        padding: 10px 16px;
+        background: var(--uva-orange);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .button.secondary { background: var(--uva-blue); }
+      .button.light { background: #eef2f7; color: var(--uva-blue); }
+      .button.danger, button.danger { background: var(--danger); }
+      .muted { color: var(--muted); }
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        background: #eef2f7;
+        color: var(--uva-blue);
+      }
+      .pill.active, .pill.approved { background: #ecfdf5; color: var(--success); }
+      .pill.pending { background: #fff7ed; color: var(--warning); }
+      .pill.denied, .pill.banned { background: #fef2f2; color: var(--danger); }
+      .pill.officer { background: #eff6ff; color: #1d4ed8; }
+      .pill.treasurer { background: #f3e8ff; color: #7c3aed; }
+      .messages { margin-bottom: 16px; }
+      .flash {
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        margin-bottom: 8px;
+      }
+      .align-between { display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
+      .center-card { max-width: 650px; margin: 48px auto; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+      th { color: var(--muted); font-size: 0.92rem; }
+      form p { margin: 0 0 14px; }
+      input, textarea, select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        font: inherit;
+        margin-top: 6px;
+        background: white;
+      }
+      .stats { display: flex; flex-wrap: wrap; gap: 14px; }
+      .stat { padding: 14px 16px; background: #f8fafc; border-radius: 16px; border: 1px solid var(--border); min-width: 150px; }
+      .message-bubble {
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        margin-bottom: 12px;
+      }
+      .message-bubble.mine { background: #fff7ed; border-color: #fed7aa; }
+      .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      }
+      .list-plain { list-style: none; padding: 0; margin: 0; }
+      .list-plain li { padding: 12px 0; border-bottom: 1px solid var(--border); }
+      .empty-state { padding: 18px; border-radius: 16px; background: #f8fafc; border: 1px dashed var(--border); }
+      .danger-zone { border: 1px solid #fecaca; background: #fff1f2; }
+      code { background: #eff3f9; padding: 2px 6px; border-radius: 6px; }
+    </style>
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="brand">CIO <span>Budget App</span></div>
+      <div class="nav">
+        {% if request.user.is_authenticated %}
+          {% if request.user.profile.role == 'user_admin' %}
+            <a href="{% url 'accounts:role_management' %}">Role Management</a>
+          {% else %}
+            <a href="{% url 'accounts:dashboard' %}">Dashboard</a>
+            <a href="{% url 'accounts:announcement_list' %}">Announcements</a>
+            <a href="{% url 'accounts:document_list' %}">Documents</a>
+            <a href="{% url 'accounts:budget_category_list' %}">Budget</a>
+            <a href="{% url 'accounts:purchase_request_list' %}">Requests</a>
+            <a href="{% url 'accounts:user_list' %}">Users</a>
+            <a href="{% url 'accounts:conversation_list' %}">Messages</a>
+            <a href="{% url 'accounts:user_profile' %}">Profile</a>
+            {% if request.user.profile.role == 'treasurer' %}
+              <a href="{% url 'accounts:membership_management' %}">Membership</a>
+            {% endif %}
+          {% endif %}
+          <a href="{% url 'accounts:delete_account' %}">Delete Account</a>
+          <a class="cta" href="{% url 'accounts:sign_out' %}">Sign Out</a>
+        {% else %}
+          <a href="{% url 'accounts:home' %}">Home</a>
+          <a class="cta" href="{% url 'accounts:sign_in' %}">Google Sign-In</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="wrapper">
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

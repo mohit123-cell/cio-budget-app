@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Purchase Request | CIO Budget App{% endblock %}
+
+{% block content %}
+  <div class="grid grid-2">
+    <div class="card">
+      <h1>{{ purchase_request.title }}</h1>
+      <p><strong>Category:</strong> {{ purchase_request.category.name }}</p>
+      <p><strong>Requested by:</strong> {{ purchase_request.requested_by.get_full_name|default:purchase_request.requested_by.username }}</p>
+      <p><strong>Estimated cost:</strong> ${{ purchase_request.estimated_cost }}</p>
+      <p>{{ purchase_request.description }}</p>
+      {% if purchase_request.receipt_file %}<p><a href="{{ purchase_request.receipt_file.url }}" target="_blank">Open uploaded receipt</a></p>{% endif %}
+      {% if purchase_request.receipt_link %}<p><a href="{{ purchase_request.receipt_link }}" target="_blank">Open external link</a></p>{% endif %}
+    </div>
+    <div class="card">
+      <h2>Review</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save review</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -98,10 +98,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 USE_S3 = bool(os.environ.get('AWS_STORAGE_BUCKET_NAME'))
 
+USE_S3 = bool(os.environ.get('AWS_STORAGE_BUCKET_NAME'))
+
 if USE_S3:
     aws_bucket_name = os.environ['AWS_STORAGE_BUCKET_NAME']
     aws_region = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
-    custom_domain = os.environ.get('AWS_S3_CUSTOM_DOMAIN') or f'{aws_bucket_name}.s3.amazonaws.com'
 
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
@@ -110,7 +111,6 @@ if USE_S3:
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = True
-    AWS_S3_CUSTOM_DOMAIN = custom_domain
     AWS_LOCATION = 'media'
 
     STORAGES = {
@@ -121,7 +121,7 @@ if USE_S3:
                 'region_name': aws_region,
                 'default_acl': None,
                 'file_overwrite': False,
-                'querystring_auth': False,
+                'querystring_auth': True,
                 'location': AWS_LOCATION,
             },
         },
@@ -129,7 +129,6 @@ if USE_S3:
             'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
         },
     }
-    MEDIA_URL = f'https://{custom_domain}/{AWS_LOCATION}/'
 else:
     STORAGES = {
         'default': {

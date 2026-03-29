@@ -109,7 +109,7 @@ if USE_S3:
     AWS_S3_REGION_NAME = aws_region
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
-    AWS_QUERYSTRING_AUTH = False
+    AWS_QUERYSTRING_AUTH = True
     AWS_S3_CUSTOM_DOMAIN = custom_domain
     AWS_LOCATION = 'media'
 

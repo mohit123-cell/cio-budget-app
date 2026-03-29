@@ -73,10 +73,15 @@ DATABASES = {
 }
 
 if os.environ.get('DATABASE_URL'):
+    require_db_ssl = (
+        os.environ.get('DB_SSL_REQUIRE', '').lower() == 'true'
+        or os.environ.get('DYNO') is not None
+    )
+
     DATABASES['default'] = dj_database_url.parse(
         os.environ['DATABASE_URL'],
         conn_max_age=600,
-        ssl_require=not DEBUG,
+        ssl_require=require_db_ssl,
     )
 
 AUTH_PASSWORD_VALIDATORS = [

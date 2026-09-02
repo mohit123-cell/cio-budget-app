@@ -78,12 +78,6 @@ Deploy normally. The `Procfile` runs migrations on release.
 4. Do **not** create that role through the normal app. The app blocks it.
 
 
-## Fix for `createsuperuser` IntegrityError
-If you previously hit an error mentioning `accounts_profile.profile_picture_url`, pull this updated project and run:
-
-```bash
-python manage.py migrate
-```
 
 That new migration removes the leftover legacy column that was causing profile creation to fail for superusers and first-time users.
 

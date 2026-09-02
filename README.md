@@ -1,6 +1,6 @@
 # CIO Budget App
 
-This is a Django + PostgreSQL + Heroku + Amazon S3 ready project for the CIO budgeting application.
+This is a Django + PostgreSQL + Heroku + Amazon S3  project for the CIO budgeting application.
 
 ## What the project does
 - Google login only (no plain Django login required)

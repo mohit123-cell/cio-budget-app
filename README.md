@@ -67,15 +67,7 @@ Set these environment variables in Heroku (and optionally locally):
 If these are present, uploaded profile images, receipts, announcement attachments, and documents go to S3.
 If they are missing, local development falls back to the local `media/` folder.
 
-## Heroku setup
-Set these config vars:
-- `DJANGO_SECRET_KEY`
-- `DEBUG=False`
-- `ALLOWED_HOSTS=your-app.herokuapp.com`
-- `CSRF_TRUSTED_ORIGINS=https://your-app.herokuapp.com`
-- `GOOGLE_OAUTH_CLIENT_ID=...`
-- `DATABASE_URL` (Heroku Postgres)
-- S3 variables listed above
+
 
 Deploy normally. The `Procfile` runs migrations on release.
 
